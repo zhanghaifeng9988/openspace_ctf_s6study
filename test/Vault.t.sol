@@ -20,7 +20,7 @@ contract VaultExploiter is Test {
         logic = new VaultLogic(bytes32("0x1234"));
         vault = new Vault(address(logic));
 
-        vault.deposite{value: 0.1 ether}();
+        vault.deposite{value: 0.5 ether}();
         vm.stopPrank();
     }
 
@@ -40,8 +40,8 @@ contract VaultExploiter is Test {
 
         // 检查攻击合约的余额
         uint256 attackerBalance = attacker.getBalance();
-        console.log("Attacker balance:", attackerBalance);
-        require(attackerBalance >= 0.2 ether, "Insufficient attacker balance");
+        console.log("Attacker balance (ether):", attackerBalance / 1 ether);
+        require(attackerBalance >= 0.6 ether, "Insufficient attacker balance");
 
         require(vault.isSolve(), "solved");
         vm.stopPrank();
