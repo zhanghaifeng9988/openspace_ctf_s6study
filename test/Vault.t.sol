@@ -34,9 +34,14 @@ contract VaultExploiter is Test {
         vault.openWithdraw();
 
         // 部署攻击合约
-        attacker = new VaultAttack{value: 0.1 ether}(vault);
-        // // 使用攻击合约提款
+        attacker = new VaultAttack{value: 0.1 ether}(address(vault));
+        // 使用攻击合约提款
         attacker.attack();
+
+        // 检查攻击合约的余额
+        uint256 attackerBalance = attacker.getBalance();
+        console.log("Attacker balance:", attackerBalance);
+        require(attackerBalance >= 0.2 ether, "Insufficient attacker balance");
 
         require(vault.isSolve(), "solved");
         vm.stopPrank();
