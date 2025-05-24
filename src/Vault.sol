@@ -81,7 +81,7 @@ contract Vault {
     // 1. canWithdraw 为 true
     // 2. 用户有存款余额
     function withdraw() public {
-        if(canWithdraw && deposites[msg.sender] >= 0) {
+        if(canWithdraw && deposites[msg.sender] > 0) {
             (bool result,) = msg.sender.call{value: deposites[msg.sender]}("");
             if(result) {
                 deposites[msg.sender] = 0;
@@ -89,3 +89,8 @@ contract Vault {
         }
     }
 }
+
+//这个合约，正常情况下，管理员将canWithdraw置为true，
+//任何有存款得人都可以调用withdraw来存款；
+//并且提款是一次性将账户下得钱，全部取出；
+//如果 msg.sender 是一个恶意合约，它可以在收到转账后立即再次调用 withdraw 函数，导致重入攻击。

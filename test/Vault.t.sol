@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "../src/Vault.sol";
 import "./VaultAttack.sol";
+import "forge-std/console.sol";
 
 contract VaultExploiter is Test {
     Vault public vault;
@@ -40,7 +41,7 @@ contract VaultExploiter is Test {
 
         // 检查攻击合约的余额
         uint256 attackerBalance = attacker.getBalance();
-        console.log("Attacker balance (ether):", attackerBalance / 1 ether);
+        console.log("Attacker balance (ether): %d", attackerBalance / 1 ether);
         require(attackerBalance >= 0.6 ether, "Insufficient attacker balance");
 
         require(vault.isSolve(), "solved");
